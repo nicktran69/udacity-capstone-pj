@@ -1,23 +1,23 @@
 import 'source-map-support/register'
-
 import {APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult} from 'aws-lambda'
-import {CreateTodoRequest} from '../../requests/CreateTodoRequest';
-import {createToDo} from "../../services/ToDoServices";
+import {UpdateAccountRequest} from '../../requests/UpdateaccountRequest'
+import {updateAccountItem} from "../../services/accountServices";
 import {decodeJWTToken} from "../../utils/JWTTokenUtils";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const newTodoItem: CreateTodoRequest = JSON.parse(event.body);
-    console.log("Crete new todo item:" + newTodoItem + "with event: ", event);
+    console.log("Processing Update Event ", event);
     const token = decodeJWTToken(event);
-    const toDoItem = await createToDo(newTodoItem, token);
+    const id = event.pathParameters.accountId;
+    const updateItemsData: UpdateAccountRequest = JSON.parse(event.body);
+    const items = await updateAccountItem(updateItemsData, id, token);
 
     return {
-        statusCode: 201,
+        statusCode: 200,
         headers: {
             "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
-            "item": toDoItem
+            "item": items
         }),
     }
 };

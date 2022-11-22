@@ -1,19 +1,19 @@
 import 'source-map-support/register'
 
 import {APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler} from 'aws-lambda'
-import {generateTodoItemUploadUrl} from "../../services/ToDoServices";
+import {generateAccountItemUploadUrl} from "../../services/AccountServices";
 import * as uuid from "uuid";
 import {decodeJWTToken} from "../../utils/JWTTokenUtils";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
+    // account: Return a presigned URL to upload a file for a account item with the provided id
     console.log("Processing Upload Event ", event);
-    const todoId = event.pathParameters.todoId;
+    const accountId = event.pathParameters.accountId;
     const token = decodeJWTToken(event);
     const imageId = uuid.v4();
 
-    const URL: String = await generateTodoItemUploadUrl(
-        todoId,
+    const URL: String = await generateAccountItemUploadUrl(
+        accountId,
         imageId,
         token
       );

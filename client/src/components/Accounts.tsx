@@ -14,106 +14,106 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createaccount, deleteaccount, getaccounts, patchaccount } from '../api/accounts-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { account } from '../types/Account'
 
-interface TodosProps {
+interface accountsProps {
   auth: Auth
   history: History
 }
 
-interface TodosState {
-  todos: Todo[]
-  newTodoName: string
-  loadingTodos: boolean
+interface accountsState {
+  accounts: account[]
+  newaccountName: string
+  loadingaccounts: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
-  state: TodosState = {
-    todos: [],
-    newTodoName: '',
-    loadingTodos: true
+export class Accounts extends React.PureComponent<accountsProps, accountsState> {
+  state: accountsState = {
+    accounts: [],
+    newaccountName: '',
+    loadingaccounts: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodoName: event.target.value })
+    this.setState({ newaccountName: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (accountId: string) => {
+    this.props.history.push(`/accounts/${accountId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onaccountCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
       const dueDate = this.calculateDueDate()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
-        name: this.state.newTodoName,
+      const newaccount = await createaccount(this.props.auth.getIdToken(), {
+        name: this.state.newaccountName,
         dueDate
       })
       this.setState({
-        todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        accounts: [...this.state.accounts, newaccount],
+        newaccountName: ''
       })
     } catch {
-      alert('Todo creation failed')
+      alert('account creation failed')
     }
   }
 
-  onTodoDelete = async (todoId: string) => {
+  onaccountDelete = async (accountId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteaccount(this.props.auth.getIdToken(), accountId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId !== todoId)
+        accounts: this.state.accounts.filter(account => account.accountId !== accountId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('account deletion failed')
     }
   }
 
-  onTodoCheck = async (pos: number) => {
+  onaccountCheck = async (pos: number) => {
     try {
-      const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
-        name: todo.name,
-        dueDate: todo.dueDate,
-        done: !todo.done
+      const account = this.state.accounts[pos]
+      await patchaccount(this.props.auth.getIdToken(), account.accountId, {
+        name: account.name,
+        dueDate: account.dueDate,
+        done: !account.done
       })
       this.setState({
-        todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
+        accounts: update(this.state.accounts, {
+          [pos]: { done: { $set: !account.done } }
         })
       })
     } catch {
-      alert('Todo update failed')
+      alert('account update failed')
     }
   }
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      const accounts = await getaccounts(this.props.auth.getIdToken())
       this.setState({
-        todos,
-        loadingTodos: false
+        accounts,
+        loadingaccounts: false
       })
     } catch (e) {
-      alert(`Failed to fetch todos`)
+      alert(`Failed to fetch accounts`)
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Account List</Header>
 
-        {this.renderCreateTodoInput()}
+        {this.renderCreateaccountInput()}
 
-        {this.renderTodos()}
+        {this.renderaccounts()}
       </div>
     )
   }
 
-  renderCreateTodoInput() {
+  renderCreateaccountInput() {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -122,12 +122,12 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New task',
-              onClick: this.onTodoCreate
+              content: 'New accout',
+              onClick: this.onaccountCreate
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Input account information..."
             onChange={this.handleNameChange}
           />
         </Grid.Column>
@@ -138,47 +138,47 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  renderTodos() {
-    if (this.state.loadingTodos) {
+  renderaccounts() {
+    if (this.state.loadingaccounts) {
       return this.renderLoading()
     }
 
-    return this.renderTodosList()
+    return this.renderaccountsList()
   }
 
   renderLoading() {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading accounts
         </Loader>
       </Grid.Row>
     )
   }
 
-  renderTodosList() {
+  renderaccountsList() {
     return (
       <Grid padded>
-        {this.state.todos.map((todo, pos) => {
+        {this.state.accounts.map((account, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
+            <Grid.Row key={account.accountId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
-                  onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
+                  onChange={() => this.onaccountCheck(pos)}
+                  checked={account.done}
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                {account.name}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {account.dueDate}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
+                  onClick={() => this.onEditButtonClick(account.accountId)}
                 >
                   <Icon name="pencil" />
                 </Button>
@@ -187,13 +187,13 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 <Button
                   icon
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
+                  onClick={() => this.onaccountDelete(account.accountId)}
                 >
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
+              {account.attachmentUrl && (
+                <Image src={account.attachmentUrl} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />

@@ -3,32 +3,32 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import * as AWS from 'aws-sdk';
 import { createLogger } from '../../utils/LoggerUtils'
 
-const logger = createLogger('todosAccess')
+const logger = createLogger('accountsAccess')
 const AWSXRay = require('aws-xray-sdk')
 const XAWS = AWSXRay.captureAWS(AWS)
 
 
-export class GenerateToDoItemPersistence {
+export class GenerateAccountItemPersistence {
   constructor(
     private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
     private readonly s3Client: Types = new XAWS.S3({ signatureVersion: 'v4' }),
-    private readonly todoTable = process.env.TODOS_TABLE,
+    private readonly accountTable = process.env.ACCOUNTS_TABLE,
     private readonly s3BucketName = process.env.S3_BUCKET_NAME) {
   }
 
-  async generateUploadTodoItemUrl(todoId: string, imageId: String, userId: String): Promise<string> {
-    logger.info(`Generating.. attachment URL: todo ${todoId}, ${userId} `)
+  async generateUploadAccountItemUrl(accountId: string, imageId: String, userId: String): Promise<string> {
+    logger.info(`Generating.. attachment URL: account ${accountId}, ${userId} `)
 
     const attachmentUrl = await this.s3Client.getSignedUrl('putObject', {
         Bucket: this.s3BucketName,
-        Key: todoId,
+        Key: accountId,
         Expires: 2000,
     });
 
     await this.docClient.update({
-      TableName: this.todoTable,
+      TableName: this.accountTable,
       Key: {
-      todoId,
+      accountId,
       userId
       },
       UpdateExpression: "set attachmentUrl = :attachmentUrl",

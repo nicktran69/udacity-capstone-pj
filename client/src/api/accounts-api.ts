@@ -1,27 +1,27 @@
 import { apiEndpoint } from '../config'
-import { Todo } from '../types/Todo';
-import { CreateTodoRequest } from '../types/CreateTodoRequest';
+import { account } from '../types/Account';
+import { CreateaccountRequest } from '../types/CreateAccountRequest';
 import Axios from 'axios'
-import { UpdateTodoRequest } from '../types/UpdateTodoRequest';
+import { UpdateaccountRequest } from '../types/UpdateAccountRequest';
 
-export async function getTodos(idToken: string): Promise<Todo[]> {
-  console.log('Fetching todos')
+export async function getaccounts(idToken: string): Promise<account[]> {
+  console.log('Fetching accounts')
 
-  const response = await Axios.get(`${apiEndpoint}/todos`, {
+  const response = await Axios.get(`${apiEndpoint}/accounts`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
     },
   })
-  console.log('Todos:', response.data)
+  console.log('accounts:', response.data)
   return response.data.items
 }
 
-export async function createTodo(
+export async function createaccount(
   idToken: string,
-  newTodo: CreateTodoRequest
-): Promise<Todo> {
-  const response = await Axios.post(`${apiEndpoint}/todos`,  JSON.stringify(newTodo), {
+  newaccount: CreateaccountRequest
+): Promise<account> {
+  const response = await Axios.post(`${apiEndpoint}/accounts`,  JSON.stringify(newaccount), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -30,12 +30,12 @@ export async function createTodo(
   return response.data.item
 }
 
-export async function patchTodo(
+export async function patchaccount(
   idToken: string,
-  todoId: string,
-  updatedTodo: UpdateTodoRequest
+  accountId: string,
+  updatedaccount: UpdateaccountRequest
 ): Promise<void> {
-  await Axios.patch(`${apiEndpoint}/todos/${todoId}`, JSON.stringify(updatedTodo), {
+  await Axios.patch(`${apiEndpoint}/accounts/${accountId}`, JSON.stringify(updatedaccount), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -43,11 +43,11 @@ export async function patchTodo(
   })
 }
 
-export async function deleteTodo(
+export async function deleteaccount(
   idToken: string,
-  todoId: string
+  accountId: string
 ): Promise<void> {
-  await Axios.delete(`${apiEndpoint}/todos/${todoId}`, {
+  await Axios.delete(`${apiEndpoint}/accounts/${accountId}`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -57,10 +57,10 @@ export async function deleteTodo(
 
 export async function getUploadUrl(
   idToken: string,
-  todoId: string
+  accountId: string
 ): Promise<string> {
   try {
-    const response = await Axios.post(`${apiEndpoint}/todos/${todoId}/attachment`, '', {
+    const response = await Axios.post(`${apiEndpoint}/accounts/${accountId}/attachment`, '', {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`

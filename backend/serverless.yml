@@ -1,6 +1,6 @@
 org: nicktran
-app: serverless-udacity-pj04
-service: serverless-udacity-pj04
+app: serverless-udacity-pj-capstone
+service: serverless-udacity-pj-capstone
 
 plugins:
   - serverless-webpack
@@ -21,9 +21,9 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    PROJECT_NAME: serverless-udacity-pj04
-    TODOS_TABLE: serverless-udacity-pj04-${self:provider.stage}
-    S3_BUCKET_NAME: udagram-pj4-${self:provider.stage}
+    PROJECT_NAME: serverless-udacity-pj-capstone
+    ACCOUNTS_TABLE: serverless-udacity-pj-capstone-${self:provider.stage}
+    S3_BUCKET_NAME: udagram-pj-capstone-${self:provider.stage}
 
   logs:
     #Enable API Gateway logs
@@ -41,92 +41,92 @@ functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  GetTodos:
-    handler: src/lambda/http/getTodos.handler
+  GetAccounts:
+    handler: src/lambda/http/getAccounts.handler
     events:
       - http:
           method: get
-          path: todos
+          path: accounts
           cors: true
           authorizer: Auth
-    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-get-todo-role-${self:provider.stage}
+    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-get-account-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ACCOUNTS_TABLE}
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
         Resource: 
           - '*'
 
-  CreateTodo:
-    handler: src/lambda/http/createTodo.handler
+  Createaccount:
+    handler: src/lambda/http/createAccount.handler
     events:
       - http:
           method: post
-          path: todos
+          path: accounts
           cors: true
           authorizer: Auth
           documentation:
-            summary: "Create a new todo item"
-            description: "Create a new todo item"
+            summary: "Create a new account item"
+            description: "Create a new account item"
             requestModels:
-              "application/json": models/create-todo-model.json
+              "application/json": models/create-account-model.json
           reqValidatorName: RequestBodyValidator
-    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-create-todo-role-${self:provider.stage}
+    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-create-account-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ACCOUNTS_TABLE}
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
         Resource: 
           - '*'
 
-  UpdateTodo:
-    handler: src/lambda/http/updateTodo.handler
+  Updateaccount:
+    handler: src/lambda/http/updateAccount.handler
     events:
       - http:
           method: patch
-          path: todos/{todoId}
+          path: accounts/{accountId}
           cors: true
           authorizer: Auth
           documentation:
-            summary: "Update a todo item"
-            description: "Update a todo item"
+            summary: "Update a account item"
+            description: "Update a account item"
             requestModels:
-              "application/json": models/update-todo-model.json
+              "application/json": models/update-account-model.json
           reqValidatorName: RequestBodyValidator
-    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-update-todo-role-${self:provider.stage}
+    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-update-account-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ACCOUNTS_TABLE}
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
         Resource: 
           - '*'
 
-  DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+  Deleteaccount:
+    handler: src/lambda/http/deleteAccount.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: accounts/{accountId}
           cors: true
           authorizer: Auth
-    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-delete-todo-role-${self:provider.stage}
+    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-delete-account-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.ACCOUNTS_TABLE}
       - Effect: Allow
         Action:
           - xray:PutTraceSegments
@@ -138,7 +138,7 @@ functions:
     events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: accounts/{accountId}/attachment
           cors: true
           authorizer: Auth
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-s3-upload-role-${self:provider.stage}
@@ -151,22 +151,22 @@ functions:
 
 resources:
   Resources:
-    # TODO: Add any necessary AWS resources
-    TodosTable:
+    # account: Add any necessary AWS resources
+    accountsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: todoId
+          - AttributeName: accountId
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - AttributeName: accountId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
+        TableName: ${self:provider.environment.ACCOUNTS_TABLE}
     onlyBody:
       Type: "AWS::ApiGateway::RequestValidator"
       Properties:
