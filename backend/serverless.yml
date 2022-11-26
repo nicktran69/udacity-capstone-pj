@@ -61,7 +61,7 @@ functions:
         Resource: 
           - '*'
 
-  Createaccount:
+  CreateAccount:
     handler: src/lambda/http/createAccount.handler
     events:
       - http:
@@ -87,7 +87,7 @@ functions:
         Resource: 
           - '*'
 
-  Updateaccount:
+  UpdateAccount:
     handler: src/lambda/http/updateAccount.handler
     events:
       - http:
@@ -113,7 +113,7 @@ functions:
         Resource: 
           - '*'
 
-  Deleteaccount:
+  DeleteAccount:
     handler: src/lambda/http/deleteAccount.handler
     events:
       - http:
@@ -152,7 +152,7 @@ functions:
 resources:
   Resources:
     # account: Add any necessary AWS resources
-    accountsTable:
+    AccountsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:

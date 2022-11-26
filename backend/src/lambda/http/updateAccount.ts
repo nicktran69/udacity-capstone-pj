@@ -1,7 +1,7 @@
 import 'source-map-support/register'
 import {APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult} from 'aws-lambda'
 import {UpdateAccountRequest} from '../../requests/UpdateaccountRequest'
-import {updateAccountItem} from "../../services/accountServices";
+import {updateAccountItem} from "../../services/AccountServices";
 import {decodeJWTToken} from "../../utils/JWTTokenUtils";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
