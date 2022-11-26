@@ -167,14 +167,6 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.ACCOUNTS_TABLE}
-    onlyBody:
-      Type: "AWS::ApiGateway::RequestValidator"
-      Properties:
-        Name: 'only-body'
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ValidateRequestBody: true
-        ValidateRequestParameters: false
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -192,7 +184,7 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 300
-   
+
     RequestBodyValidator:
       Type: AWS::ApiGateway::RequestValidator
       Properties:

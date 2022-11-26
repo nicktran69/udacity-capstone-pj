@@ -15,12 +15,12 @@ export class DeleteAccountItemByIdAndUsrIdPersistence {
 
     async deleteAccountItemByIdAndUsrId(accountId: string, userId: string): Promise<void> {
         logger.info(`Delete Id: id:${accountId}  of user: ${userId}`);
-        this.docClient.delete({
+        await this.docClient.delete({
             TableName: this.accountTable,
             Key: {
             "accountId": accountId,
-            "userId": userId
+            "userId": userId,
             },
-        });
+        }).promise();
     }
 }

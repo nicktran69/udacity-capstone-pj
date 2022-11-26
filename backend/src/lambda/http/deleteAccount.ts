@@ -6,7 +6,7 @@ import {decodeJWTToken} from "../../utils/JWTTokenUtils";
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const id = event.pathParameters.accountId;
-    console.log("Delete account item id: ," + id + " by event info: ", event);
+    console.log("Delete account item id: " + id + " by event info: ", event);
     const token = decodeJWTToken(event);
     await deleteAccountItem(id, token);
     return {

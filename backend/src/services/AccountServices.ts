@@ -21,12 +21,12 @@ export async function getAllAccountItems(jwtToken: string): Promise<AccountItem[
     return getAllaccountPersistence.getAllAccountItem(userId);
 }
 
-export function generateAccountItemUploadUrl(accountId: string, imageId: string, jwtToken: string): Promise<string> {
+export async function generateAccountItemUploadUrl(accountId: string, imageId: string, jwtToken: string): Promise<string> {
     const userId = parseUserId(jwtToken);
     return generateaccountItemPersistence.generateUploadAccountItemUrl(accountId, imageId, userId);
 }
 
-export function createAccount(createaccountRequest: CreateAccountRequest, jwtToken: string): Promise<AccountItem> {
+export async function createAccount(createaccountRequest: CreateAccountRequest, jwtToken: string): Promise<AccountItem> {
     const userId = parseUserId(jwtToken);
     const accountId =  uuidv4();
     const s3BucketName = process.env.S3_BUCKET_NAME;
@@ -34,19 +34,20 @@ export function createAccount(createaccountRequest: CreateAccountRequest, jwtTok
     return createaccountPersistence.createAccountItem({
         userId: userId,
         accountId: accountId,
-        attachmentUrl:  `https://${s3BucketName}.s3.amazonaws.com/${accountId}`, 
         createdAt: new Date().getTime().toString(),
+        name:createaccountRequest.name,
+        dueDate: createaccountRequest.dueDate,
         done: false,
-        ...createaccountRequest,
+        attachmentUrl: `https://${s3BucketName}.s3.amazonaws.com/${accountId}`
     });
 }
 
-export function updateAccountItem(updateaccountRequest: UpdateAccountRequest, accountId: string, jwtToken: string): Promise<void> {
+export async function updateAccountItem(updateaccountRequest: UpdateAccountRequest, accountId: string, jwtToken: string): Promise<void> {
     const userId = parseUserId(jwtToken);
     return updateaccountItemByIdAndUsrIdPersistence.updateAccountItemByIdAndUsrId(updateaccountRequest, accountId, userId);
 }
 
-export function deleteAccountItem(accountId: string, jwtToken: string): Promise<void> {
+export async function deleteAccountItem(accountId: string, jwtToken: string): Promise<void> {
     const userId = parseUserId(jwtToken);
     return deleteaccountItemByIdAndUsrIdPersistence.deleteAccountItemByIdAndUsrId(accountId, userId);
 }

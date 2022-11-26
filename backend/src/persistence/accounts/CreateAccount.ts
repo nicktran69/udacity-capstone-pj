@@ -15,15 +15,13 @@ export class CreateAccountPersistence {
     }
 
     async createAccountItem(accountItem: AccountItem): Promise<AccountItem> {
-        logger.info(`Create account item: ${accountItem.accountId}`)
-    
-        this.docClient
-        .put({
-          TableName: this.accountTable,
-          Item: accountItem,
-        })
-        .promise();
-    
+      logger.info(`Create account item: ${accountItem.accountId}`)
+  
+      await this.docClient.put({
+        TableName: this.accountTable,
+        Item: accountItem,
+      }).promise();
+
       return accountItem;
     }
 }

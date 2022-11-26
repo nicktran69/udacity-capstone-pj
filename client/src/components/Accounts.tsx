@@ -122,7 +122,7 @@ export class Accounts extends React.PureComponent<accountsProps, accountsState> 
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New accout',
+              content: 'New account',
               onClick: this.onaccountCreate
             }}
             fluid
