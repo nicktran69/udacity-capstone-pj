@@ -6,6 +6,7 @@ plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
   - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
 
 provider:
   name: aws
@@ -37,6 +38,40 @@ provider:
            - xray:PutTelemetryRecords
          Resource: "*"
 
+custom:
+  documentation:
+    api:
+      info:
+        version: '1.0.0'
+        title: My API
+        description: This is my API
+      tags:
+        -
+          name: User
+          description: User Management
+    models:
+      - name: CreateAccountModel
+        contentType: "application/json"
+        schema: ${file(models/create-account-model.json)}
+      - name: UpdateAccountModel
+        contentType: "application/json"
+        schema: ${file(models/update-account-model.json)}
+      - name: 400JsonResponse
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            statusCode:
+              type: number
+  commonModelSchemaFragments:
+    MethodResponse400Json:
+      statusCode: '400'
+      responseModels:
+        "application/json": 400JsonResponse
+
+
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
@@ -65,15 +100,15 @@ functions:
     handler: src/lambda/http/createAccount.handler
     events:
       - http:
-          method: post
-          path: accounts
-          cors: true
-          authorizer: Auth
           documentation:
             summary: "Create a new account item"
             description: "Create a new account item"
             requestModels:
-              "application/json": models/create-account-model.json
+              "application/json": CreateAccountModel
+          method: post
+          path: accounts
+          cors: true
+          authorizer: Auth
           reqValidatorName: RequestBodyValidator
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-create-account-role-${self:provider.stage}
     iamRoleStatements:
@@ -99,7 +134,7 @@ functions:
             summary: "Update a account item"
             description: "Update a account item"
             requestModels:
-              "application/json": models/update-account-model.json
+              "application/json": UpdateAccountModel
           reqValidatorName: RequestBodyValidator
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-update-account-role-${self:provider.stage}
     iamRoleStatements:
